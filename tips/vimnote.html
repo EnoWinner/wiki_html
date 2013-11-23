@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../style.css">
+<title>站点建设总结</title>
+<meta http-equiv="Content-Type" content="text/html;  charset=cp936">
+<script>var root_path = '../';</script>
+</head>
+<body>
+<div id="all">
+<div id="header">
+	<ul id="top-nav">
+		<li>
+			<a href="../index.html">首页</a>
+		</li>
+		<li>
+			<a href="../tips/data.html">工作总结</a>
+		</li>
+		<li>
+			<a href="../diary/diary.html">日记</a>
+		</li>
+		<li>
+			<a href="../book/book.html">读书笔记</a>
+		</li>
+	</ul>
+</div>
+<div id="cse"></div>
+<div id="main">
+
+<div class="toc">
+<ul>
+<li><a href="#toc_1">站点建设总结</a>
+<ul>
+<li><a href="#toc_1.1">用的资源</a>
+<li><a href="#toc_1.2">vimwiki相关</a>
+</ul>
+</ul>
+</div>
+<h1 id="toc_1" class="justcenter">站点建设总结</h1>
+<h2 id="toc_1.1">用的资源</h2>
+
+<p>
+首先要感谢<a href="http://wiki.ktmud.com/">丘迟的世界</a>，资源都是从这个wiki网站下载下来的。还有<a href="http://vimwiki.googlecode.com/hg/src/doc/vimwiki.txt?r=328bb9cc754fa6877faf233127b1bab665a2f6fb">vim说明</a>其实在vimfiles/doc目录下也有。不过自己不习惯看txt的样子。
+</p>
+<h2 id="toc_1.2">vimwiki相关</h2>
+
+<p>
+使用的是gvim7.4,有此配置不太一样
+</p>
+<ol>
+<li>
+header.htm和footer.htm已经没有了，应该写\vimfiles\autoload\vimwiki目录下的default.tpl中
+
+<li>
+\[[\]]中间连接\[[note|一个记录\]]这要就会在目录下生成一个名为note的wiki文件了,\[[diary/diary|日记\]]就会在diary目录下生成diary.wiki
+
+<li class="done0">
+要改进的地方
+
+<ul>
+<li class="done0">
+代码语法高亮
+
+<li class="done0">
+发部这个wiki小站  
+
+</ul>
+</ol>
+
+</div>
+<div id="footer">
+    <p>&copy; 2013 后之后觉 &nbsp;&nbsp; <a href="../SiteMap.html" title="点击进入网站导航">导航</a></p>
+</div>
+</div>
+<script src="../jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="../vimwiki.js" type="text/javascript"></script>
+</body>
+</html>

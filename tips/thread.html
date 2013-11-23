@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../style.css">
+<title>thread</title>
+<meta http-equiv="Content-Type" content="text/html;  charset=cp936">
+<script>var root_path = '../';</script>
+</head>
+<body>
+<div id="all">
+<div id="header">
+	<ul id="top-nav">
+		<li>
+			<a href="../index.html">首页</a>
+		</li>
+		<li>
+			<a href="../tips/data.html">工作总结</a>
+		</li>
+		<li>
+			<a href="../diary/diary.html">日记</a>
+		</li>
+		<li>
+			<a href="../book/book.html">读书笔记</a>
+		</li>
+	</ul>
+</div>
+<div id="cse"></div>
+<div id="main">
+
+<div class="toc">
+<ul>
+<li><a href="#toc_1">windowsAPI中关于线程的几个函数</a>
+<ul>
+<li><a href="#toc_1.1">API说明</a>
+<ul>
+<li><a href="#toc_1.1.1">WaitForSingleObject</a>
+<li><a href="#toc_1.1.2">CreateProcess</a>
+</ul>
+<li><a href="#toc_1.2">程序</a>
+</ul>
+</ul>
+</div>
+<h1 id="toc_1" class="justcenter">windowsAPI中关于线程的几个函数</h1>
+<h2 id="toc_1.1">API说明</h2>
+<h3 id="toc_1.1.1">WaitForSingleObject</h3>
+<pre>
+    WaitForSingleObject, 是因为下面的 Mutex、Semaphore、
+    Event、WaitableTimer 等同步手段都要使用这个函数; 不过等待函数可不止 WaitForSingleObject 它一个, 但它最简单.
+    function WaitForSingleObject(
+     hHandle: THandle;      {要等待的对象句柄}
+     dwMilliseconds: DWORD  {等待的时间, 单位是毫秒}
+     ): DWORD; stdcall;       {返回值如下:}
+
+    WAIT_OBJECT_0  {等着了, 本例中是: 等的那个进程终于结束了}
+    WAIT_TIMEOUT   {等过了点(你指定的时间), 也没等着}
+    WAIT_ABANDONED {好不容易等着了, 但人家还是不让咱执行; 这一般是互斥对象}
+
+    //WaitForSingleObject 的第二个参数一般给常数值 INFINITE, 表示一直等下去, 死等.
+</pre>
+<h3 id="toc_1.1.2">CreateProcess</h3>
+
+<p>
+  delphi在windows下，有三种方式来启动程序
+</p>
+<ol>
+<li>
+WinExec
+
+</ol>
+
+<p>
+  主要运行EXE文件
+</p>
+
+<p>
+　lpCmdLine：指向一个空结束的字符串，串中包含将要执行的应用程序的命令行（文件名加上可选参数）。 
+</p>
+
+<p>
+　uCmdShow：定义Windows应用程序的窗口如何显示，并为CreateProcess函数提供STARTUPINFO参数的wShowWindow成员的值
+</p>
+
+<p>
+　若函数调用成功，则返回值大于31。若函数调用失败，则返回值为下列之一： 
+</p>
+<ul>
+<li>
+0：系统内存或资源已耗尽
+
+<li>
+ERROR_BAD_FORMAT：EXE文件无效（非Win32.EXE或.EXE影像错误）
+
+<li>
+ERROR_FILE_NOT_FOUND：指定的文件未找到。 
+
+<li>
+ERROR_PATH_NOT_FOUND：指定的路径未找到。
+
+</ul>
+ 
+<p>
+　　虽然Microsoft认为WinExec已过时，但是在许多时候，简单的WinExec函数仍是运行新程序的最好方式。简单地传送作为第一个参数的 命令行，还需要决定如何显示程序（该程序也许会忽视它）的第二个参数。通常，将其设置为SW_SHOW，也可尝试SW_MINIMIZED或 SW_MAXIMIZED。WinExec不允许用CreateProcess获得的所有选项，而它的确简单。 
+</p>
+
+
+<ol>
+<li>
+ShellExecute  
+
+</ol>
+<blockquote>
+HINSTANCE ShellExecute(HWND hwnd, LPCTSTR lpOperation, LPCTSTR lpFile, LPCTSTR lpParameters,  LPCTSTR lpDirectory, INT nShowCmd);
+</blockquote>
+
+<ul>
+<li>
+hWnd：用于指定父窗口句柄。当函数调用过程出现错误时，它将作为Windows消息窗口的父窗口。例如，可以将其设置为应用程序主窗口句柄，即Application.Handle，也可以将其设置为桌面窗口句柄（用GetDesktopWindow函数获得）。  
+
+<li>
+lpOperation：用于指定要进行的操作。其中“open”操作表示执行由FileName参数指定的程序，或打开由FileName参数指定的文件或文件夹；“print”操作表示打印由FileName参数指定的文件；“explore”操作表示浏览由FileName参数指定的文件夹。当参数设为nil时，表示执行默认操作“open”。  
+
+<li>
+lpFileName：用于指定要打开的文件名、要执行的程序文件名或要浏览的文件夹名。  
+
+<li>
+lpParameters：若FileName参数是一个可执行程序，则此参数指定命令行参数，否则此参数应为nil或PChar(0)。  
+
+<li>
+lpDirectory：用于指定默认目录。  
+
+<li>
+lpShowCmd：若FileName参数是一个可执行程序，则此参数指定程序窗口的初始显示方式，否则此参数应设置为0。 
+
+</ul>
+
+<p>
+　　
+[最后的那个参数，为窗口指定可视性方面的一个命令。 请用下述任何一个常数  
+SW_HIDE 隐藏窗口，活动状态给令一个窗口  
+SW_MINIMIZE 最小化窗口，活动状态给令一个窗口  
+SW_RESTORE 用原来的大小和位置显示一个窗口，同时令其进入活动状态  
+SW_SHOW 用当前的大小和位置显示一个窗口，同时令其进入活动状态  
+SW_SHOWMAXIMIZED 最大化窗口，并将其激活  
+SW_SHOWMINIMIZED 最小化窗口，并将其激活  
+SW_SHOWMINNOACTIVE 最小化一个窗口，同时不改变活动窗口  
+SW_SHOWNA 用当前的大小和位置显示一个窗口，不改变活动窗口  
+SW_SHOWNOACTIVATE 用最近的大小和位置显示一个窗口，同时不改变活动窗口  
+SW_SHOWNORMAL 与SW_RESTORE相同]
+</p>
+<ol>
+<li>
+用CreateProcess 
+
+</ol>
+
+<pre>
+BOOL CreateProcess( 
+　LPCTSTR lpApplicationName, 
+　LPTSTR lpCommandLine, 
+　LPSECURITY_ATTRIBUTES lpProcessAttributes,  
+　LPSECURITY_ATTRIBUTES lpThreadAttributes,  
+　BOOL bInheritHandles,  
+　DWORD dwCreationFlags, 
+　LPVOID lpEnvironment,  
+　LPCTSTR lpCurrentDirectory,  
+　LPSTARTUPINFO lpStartupInfo,  
+　LPPROCESS_INFORMATION lpProcessInformation  
+); 
+</pre>
+<ul>
+<li>
+lpApplicationName：指向一个以空结尾的串，他指定了要执行的模块 
+
+<li>
+lpCommandLine：指向一个以空结尾的串，该串定义了要执行的命令行。 
+
+<li>
+lpProcessAttributes：指向一个SECURITY_ATTRIBUTES结构，该结构决定了返回的句柄是否可被子进程继承。 
+
+<li>
+lpThreadAttributes：指向一个SECURITY_ATTRIBUTES结构，该结构决定了返回的句柄是否可被子进程继承。  
+
+<li>
+bInheritHandles,：表明新进程是否从调用进程继承句柄。 
+
+<li>
+dwCreationFlags：定义控制优先类和进程创建的附加标志。 
+
+<li>
+lpEnvironment：指向一个新进程的环境块。 
+
+<li>
+lpCurrentDirectory：指向一个以空结尾的串，该串定义了子进程的当前驱动器和当前目录。 
+
+<li>
+lpStartupInfo：指向一个STARTUPINFO结构，该结构定义了新进程的主窗口将如何显示。 
+
+<li>
+lpProcessInformation：指向PROCESS_INFORMATION结构，该结构接受关于新进程的表示信息。 
+
+</ul>
+
+<p>
+　　若函数调用成功，则返回值不为0；若函数调用失败，返回值为0。 
+　　ShellExecute和WinExec命令用于简单的作业。如果要完全控制一个新进程，就必须调用CreateProcess。
+</p>
+<h2 id="toc_1.2">程序</h2>
+
+<pre class="brush: delphi"&gt;>
+{等到cmd命令执行完之后，删除adt.jar}
+function cmdover1(p: Pointer): DWORD;stdcall;
+//CreateThread的入口函数
+begin
+  if WaitForSingleObject(hprocess,INFINITE)=WAIT_OBJECT_0 then
+  begin
+    DeleteFile(Form1.workdir+'/adt.jar');
+    Form1.mmo1.Lines.Add('完成');
+    Screen.Cursor:=crDefault;
+  end;
+  Result:=0;
+end;
+
+procedure TForm1.PackANE;
+var
+  cmdstr:string;
+  s:string;
+  sinfo:TStartupInfo;
+  pinfo:TProcessInformation;
+  threadid:DWORD;
+begin
+  cmdstr:=Format(cmdline,[lbledt1.Text,lbledt2.Text,lbledt7.Text+'.ane',
+                        lbledt4.Text,lbledt6.Text,lbledt3.Text,lbledt5.Text]);
+  //程序目录 证书 密码 ane文件名 extension.xml  swc swf jar
+  s:='cmd.exe /c '+cmdstr;// +cmdstr;
+  FillChar(sInfo, SizeOf(sInfo), 0);
+  if  CreateProcess( nil,pchar(s), nil, nil, FALSE,
+    NORMAL_PRIORITY_CLASS or CREATE_NO_WINDOW, nil, nil, sinfo, pinfo ) then
+  begin
+    hprocess:=pinfo.hProcess;
+    Screen.Cursor:=crHourGlass;
+    CreateThread(nil,0,@cmdover1,nil,0,threadid);
+  end;
+end;
+</pre>
+
+</div>
+<div id="footer">
+    <p>&copy; 2013 后之后觉 &nbsp;&nbsp; <a href="../SiteMap.html" title="点击进入网站导航">导航</a></p>
+</div>
+</div>
+<script src="../jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="../vimwiki.js" type="text/javascript"></script>
+</body>
+</html>
